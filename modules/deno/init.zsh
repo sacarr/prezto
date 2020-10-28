@@ -5,10 +5,14 @@
 #
 
 
-export DENO_HOME=~/.deno
+# export DENO_DIR=~/.deno
+
+# Deno is installed.  Do nothing
+if (( $+commands[deno] )); then
+  : # No-op
 
 # Brew install deno.
-if  (( !$+commands[deno] )) && (( $+commands[brew] )); then
+elif  (( !$+commands[deno] )) && (( $+commands[brew] )); then
   brew install deno >/dev/null 2>&1
 
 # Manually install deno.
@@ -17,17 +21,18 @@ elif (( !$+commands[deno] )) && (( $+commands[curl] )); then
 
 # Cannot install deno.
 else
-  echo "Deno module installation failed.  Install brew or curl."
-  exit -1
+  echo "Deno module installation failed.  Install brew and / or curl then try again."
 fi
 
 # Create the deno folder if it does not exists
-if [[ -d "${DENO_HOME:=$HOME/.deno}/bin" ]]; then
+if [[ -d "${DENO_DIR:=$HOME/.deno}/bin" ]]; then
   : # No-op
 else
-  mkdir ${DENO_HOME:=$HOME/.deno}/bin
+  mkdir ${DENO_DIR:=$HOME/.deno}/bin
 fi
-export PATH=${DENO_HOME:=$HOME/.deno}/bin:$PATH
+
+# Add deno compiled binaries folder to path
+export PATH=${DENO_DIR:=$HOME/.deno}/bin:$PATH
 
 # Create the deno cache folder if it does not exists
 if [[ -d "${DENO_CACHE:=$HOME/.cache/deno}" ]]; then
